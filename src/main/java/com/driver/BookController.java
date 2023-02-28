@@ -47,28 +47,81 @@ public class BookController {
     @PostMapping("/create-book")
     public ResponseEntity<Book> createBook(@RequestBody Book book){
         // Your code goes here.
+        book.setId(id);
+        bookList.add(book);
+        this.id++;
+
         return new ResponseEntity<>(book, HttpStatus.CREATED);
     }
 
     // get request /get-book-by-id/{id}
     // pass id as path variable
     // getBookById()
+    @GetMapping("/get-book-by-id/{id}")
+    public Book getBookById(@PathVariable("id") int id){
+     return bookList.get(id-1);
+    }
 
     // delete request /delete-book-by-id/{id}
     // pass id as path variable
     // deleteBookById()
 
+    @DeleteMapping("/delete-book-by-id/{id}")
+    public String deleteBookById (@PathVariable("id") int id){
+          if(bookList.isEmpty()) return "Book not present";
+          bookList.remove(id);
+          return "Successfully deleted";
+    }
+
+
     // get request /get-all-books
     // getAllBooks()
 
+    @GetMapping("/get-all-books")
+    public List<Book> getAllBooks (){
+        return getBookList();
+    }
+
+
+
     // delete request /delete-all-books
     // deleteAllBooks()
+    @DeleteMapping("/delete-all-books")
+    public String deleteAllBooks(){
+         bookList.clear();
+         return "Deleted all books";
+    }
+
+
 
     // get request /get-books-by-author
     // pass author name as request param
     // getBooksByAuthor()
 
+    @GetMapping("/get-books-by-author/{name}")
+    public ResponseEntity<List<Book>> getBooksByAuthor(@RequestParam("name") String name){
+         List<Book> listbook = new ArrayList<>();
+         for(Book book : bookList){
+             if(book.getAuthor().equals(name)) listbook.add(book);
+         }
+
+        return new ResponseEntity<>(listbook, HttpStatus.CREATED);
+    }
+
+
+
     // get request /get-books-by-genre
     // pass genre name as request param
     // getBooksByGenre()
+
+    @GetMapping("/get-books-by-genre/{name}")
+    public List<Book>  getBooksByGenre(@RequestParam("name") String name){
+        List<Book>temp = new ArrayList<>();
+        for(Book b : bookList){
+            if(b.getGenre().equals(name)) temp.add(b);
+        }
+        return temp;
+    }
+
+
 }
